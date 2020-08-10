@@ -6,8 +6,8 @@
 # https://learn-the-web.algonquindesign.ca/topics/markdown-yaml-cheat-sheet/#yaml
 # https://learnxinyminutes.com/docs/yaml/
 
-title: fastpages
-description: An easy to use blogging platform with support for Jupyter Notebooks.
+title: Akshith's Blog
+description: Blog created as a part of univ.ai ktf-c1 Project.
 github_username: akshithsriram
 # you can comment the below line out if your repo name is not different than your baseurl
 github_repo: "blog"
@@ -46,13 +46,13 @@ minima:
 use_math: 
 
 # Set this to true to display the summary of your blog post under your title on the Home page.
-show_description: true
+show_description: false
 
 # Set this to true to display image previews on home page, if they exist
 show_image: false
 
 # Set this to true to display tags on each post
-show_tags: true
+show_tags: false
 
 # Add your Google Analytics ID here if you have one and want to use it
 google_analytics: 
@@ -70,7 +70,7 @@ include:
 default_badges:
   github: true
   binder: true
-  colab: true
+  colab: false
 
 # Escape HTML in post descriptions
 html_escape:
