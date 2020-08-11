@@ -8,6 +8,9 @@ https://akshithsriram.github.io/blog/
 
 # My Blog
 
+# GitHub link
+
+https://github.com/akshithsriram/blog 
 
 _powered by [fastpages](https://github.com/fastai/fastpages)_
 
