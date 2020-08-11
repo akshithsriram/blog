@@ -8,7 +8,7 @@ ERRORS=""
 for file in *.ipynb
 do
 
-  if file == "2020-08-06-dynamic.ipynb"; then
+  if file == "2020-08-11-CovidDashboard_auto_updated.ipynb"; then
     if papermill --kernel python3 "${file}" "${file}"; then
         echo "Sucessfully refreshed ${file}\n\n\n\n"
         git add "${file}"
