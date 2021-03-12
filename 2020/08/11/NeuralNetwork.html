@@ -1,0 +1,993 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="twitter:card" content="summary" /><!-- Begin Jekyll SEO tag v2.6.1 -->
+<title>A Basic Neural Network: Differentiate Hand-Written Digits | Akshith’s Blog</title>
+<meta name="generator" content="Jekyll v4.0.0" />
+<meta property="og:title" content="A Basic Neural Network: Differentiate Hand-Written Digits" />
+<meta name="author" content="Akshith Sriram" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="Blog created as a part of univ.ai ktf-c1 Project." />
+<meta property="og:description" content="Blog created as a part of univ.ai ktf-c1 Project." />
+<link rel="canonical" href="https://akshithsriram.github.io/blog/2020/08/11/NeuralNetwork.html" />
+<meta property="og:url" content="https://akshithsriram.github.io/blog/2020/08/11/NeuralNetwork.html" />
+<meta property="og:site_name" content="Akshith’s Blog" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2020-08-11T00:00:00-05:00" />
+<script type="application/ld+json">
+{"datePublished":"2020-08-11T00:00:00-05:00","dateModified":"2020-08-11T00:00:00-05:00","author":{"@type":"Person","name":"Akshith Sriram"},"mainEntityOfPage":{"@type":"WebPage","@id":"https://akshithsriram.github.io/blog/2020/08/11/NeuralNetwork.html"},"description":"Blog created as a part of univ.ai ktf-c1 Project.","@type":"BlogPosting","url":"https://akshithsriram.github.io/blog/2020/08/11/NeuralNetwork.html","headline":"A Basic Neural Network: Differentiate Hand-Written Digits","@context":"https://schema.org"}</script>
+<!-- End Jekyll SEO tag -->
+<link rel="stylesheet" href="/blog/assets/css/style.css"><link type="application/atom+xml" rel="alternate" href="https://akshithsriram.github.io/blog/feed.xml" title="Akshith's Blog" /><link rel="shortcut icon" type="image/x-icon" href="/blog/images/favicon.ico"><!-- Begin Jekyll SEO tag v2.6.1 -->
+<title>A Basic Neural Network: Differentiate Hand-Written Digits | Akshith’s Blog</title>
+<meta name="generator" content="Jekyll v4.0.0" />
+<meta property="og:title" content="A Basic Neural Network: Differentiate Hand-Written Digits" />
+<meta name="author" content="Akshith Sriram" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="Blog created as a part of univ.ai ktf-c1 Project." />
+<meta property="og:description" content="Blog created as a part of univ.ai ktf-c1 Project." />
+<link rel="canonical" href="https://akshithsriram.github.io/blog/2020/08/11/NeuralNetwork.html" />
+<meta property="og:url" content="https://akshithsriram.github.io/blog/2020/08/11/NeuralNetwork.html" />
+<meta property="og:site_name" content="Akshith’s Blog" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2020-08-11T00:00:00-05:00" />
+<script type="application/ld+json">
+{"datePublished":"2020-08-11T00:00:00-05:00","dateModified":"2020-08-11T00:00:00-05:00","author":{"@type":"Person","name":"Akshith Sriram"},"mainEntityOfPage":{"@type":"WebPage","@id":"https://akshithsriram.github.io/blog/2020/08/11/NeuralNetwork.html"},"description":"Blog created as a part of univ.ai ktf-c1 Project.","@type":"BlogPosting","url":"https://akshithsriram.github.io/blog/2020/08/11/NeuralNetwork.html","headline":"A Basic Neural Network: Differentiate Hand-Written Digits","@context":"https://schema.org"}</script>
+<!-- End Jekyll SEO tag -->
+
+<link href="https://unpkg.com/@primer/css/dist/primer.css" rel="stylesheet" />
+<link rel="stylesheet" href="//use.fontawesome.com/releases/v5.0.7/css/all.css"><link type="application/atom+xml" rel="alternate" href="https://akshithsriram.github.io/blog/feed.xml" title="Akshith's Blog" />
+
+<script>
+function wrap_img(fn) {
+    if (document.attachEvent ? document.readyState === "complete" : document.readyState !== "loading") {
+        var elements = document.querySelectorAll(".post img");
+        Array.prototype.forEach.call(elements, function(el, i) {
+            if (el.getAttribute("title") && (el.className != "emoji")) {
+                const caption = document.createElement('figcaption');
+                var node = document.createTextNode(el.getAttribute("title"));
+                caption.appendChild(node);
+                const wrapper = document.createElement('figure');
+                wrapper.className = 'image';
+                el.parentNode.insertBefore(wrapper, el);
+                el.parentNode.removeChild(el);
+                wrapper.appendChild(el);
+                wrapper.appendChild(caption);
+            }
+        });
+    } else { document.addEventListener('DOMContentLoaded', fn); }
+}
+window.onload = wrap_img;
+</script>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function(){
+    // add link icon to anchor tags
+    var elem = document.querySelectorAll(".anchor-link")
+    elem.forEach(e => (e.innerHTML = '<i class="fas fa-link fa-xs"></i>'));
+    });
+</script>
+</head>
+<body><header class="site-header">
+
+  <div class="wrapper"><a class="site-title" rel="author" href="/blog/">Akshith&#39;s Blog</a></div>
+</header>
+<main class="page-content" aria-label="Content">
+      <div class="wrapper">
+        <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+
+  <header class="post-header">
+    <h1 class="post-title p-name" itemprop="name headline">A Basic Neural Network: Differentiate Hand-Written Digits</h1><p class="post-meta post-meta-title"><time class="dt-published" datetime="2020-08-11T00:00:00-05:00" itemprop="datePublished">
+        Aug 11, 2020
+      </time>• 
+          <span itemprop="author" itemscope itemtype="http://schema.org/Person">
+            <span class="p-author h-card" itemprop="name">Akshith Sriram</span></span>
+       • <span class="read-time" title="Estimated read time">
+    
+    
+      6 min read
+    
+</span></p>
+
+    
+
+    
+      
+        <div class="pb-5 d-flex flex-wrap flex-justify-end">
+          <div class="px-2">
+
+    <a href="https://github.com/akshithsriram/blog/tree/master/_notebooks/2020-08-11-NeuralNetwork.ipynb" role="button" target="_blank">
+<img class="notebook-badge-image" src="/blog/assets/badges/github.svg" alt="View On GitHub">
+    </a>
+</div>
+
+          <div class="px-2">
+    <a href="https://mybinder.org/v2/gh/akshithsriram/blog/master?filepath=_notebooks%2F2020-08-11-NeuralNetwork.ipynb" target="_blank">
+        <img class="notebook-badge-image" src="/blog/assets/badges/binder.svg" alt="Open In Binder"/>
+    </a>
+</div>
+
+          
+        </div>
+      </header>
+
+  <div class="post-content e-content" itemprop="articleBody">
+    <!--
+#################################################
+### THIS FILE WAS AUTOGENERATED! DO NOT EDIT! ###
+#################################################
+# file to edit: _notebooks/2020-08-11-NeuralNetwork.ipynb
+-->
+
+<div class="container" id="notebook-container">
+        
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+
+</div>
+    
+
+<div class="cell border-box-sizing text_cell rendered celltag_papermill-error-cell-tag"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p><span style="color:red; font-family:Helvetica Neue, Helvetica, Arial, sans-serif; font-size:2em;">An Exception was encountered at '<a href="#papermill-error-cell">In [4]</a>'.</span></p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="Key-Objectives:">Key Objectives:<a class="anchor-link" href="#Key-Objectives:"> </a></h3><ul>
+<li>Building a neural network that differentiates two hand-written digits 3 and 8.</li>
+<li>Comparing the results of this Neural Network (NN) to that of a Logistic Regression (LR) model.</li>
+</ul>
+<h3 id="Requirements:">Requirements:<a class="anchor-link" href="#Requirements:"> </a></h3><ul>
+<li>'Kudzu' : A neural network library that was designed during our course by <a href="www.univ.ai">Univ.AI</a>. </li>
+<li>MNIST Database</li>
+</ul>
+<p>If MNIST is not installed, use the command <code>!pip install mnist</code> given below.
+It can be run both from the command line and Jupyter Notebook.</p>
+
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="o">!</span>pip install mnist 
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>Collecting mnist
+  Downloading mnist-0.2.2-py2.py3-none-any.whl (3.5 kB)
+Requirement already satisfied: numpy in /opt/hostedtoolcache/Python/3.6.13/x64/lib/python3.6/site-packages (from mnist) (1.19.5)
+Installing collected packages: mnist
+Successfully installed mnist-0.2.2
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h4 id="Importing-necessary-libraries">Importing necessary libraries<a class="anchor-link" href="#Importing-necessary-libraries"> </a></h4>
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="o">%</span><span class="k">load_ext</span> autoreload
+<span class="o">%</span><span class="k">autoreload</span> 2
+
+<span class="o">%</span><span class="k">matplotlib</span> inline
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+    
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="Preparing-the-Data">Preparing the Data<a class="anchor-link" href="#Preparing-the-Data"> </a></h3>
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">import</span> <span class="nn">mnist</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+    
+
+<div class="cell border-box-sizing text_cell rendered celltag_papermill-error-cell-tag"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p><span id="papermill-error-cell" style="color:red; font-family:Helvetica Neue, Helvetica, Arial, sans-serif; font-size:2em;">Execution using papermill encountered an exception here and stopped:</span></p>
+
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">train_images</span> <span class="o">=</span> <span class="n">mnist</span><span class="o">.</span><span class="n">train_images</span><span class="p">()</span>
+<span class="n">train_labels</span> <span class="o">=</span> <span class="n">mnist</span><span class="o">.</span><span class="n">train_labels</span><span class="p">()</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+<div class="output_subarea output_text output_error">
+<pre>
+<span class="ansi-red-fg">---------------------------------------------------------------------------</span>
+<span class="ansi-red-fg">HTTPError</span>                                 Traceback (most recent call last)
+<span class="ansi-green-fg">&lt;ipython-input-4-f041e8573d44&gt;</span> in <span class="ansi-cyan-fg">&lt;module&gt;</span>
+<span class="ansi-green-fg">----&gt; 1</span><span class="ansi-red-fg"> </span>train_images <span class="ansi-blue-fg">=</span> mnist<span class="ansi-blue-fg">.</span>train_images<span class="ansi-blue-fg">(</span><span class="ansi-blue-fg">)</span>
+<span class="ansi-green-intense-fg ansi-bold">      2</span> train_labels <span class="ansi-blue-fg">=</span> mnist<span class="ansi-blue-fg">.</span>train_labels<span class="ansi-blue-fg">(</span><span class="ansi-blue-fg">)</span>
+
+<span class="ansi-green-fg">/opt/hostedtoolcache/Python/3.6.13/x64/lib/python3.6/site-packages/mnist/__init__.py</span> in <span class="ansi-cyan-fg">train_images</span><span class="ansi-blue-fg">()</span>
+<span class="ansi-green-intense-fg ansi-bold">    159</span>         columns of the image
+<span class="ansi-green-intense-fg ansi-bold">    160</span>     &#34;&#34;&#34;
+<span class="ansi-green-fg">--&gt; 161</span><span class="ansi-red-fg">     </span><span class="ansi-green-fg">return</span> download_and_parse_mnist_file<span class="ansi-blue-fg">(</span><span class="ansi-blue-fg">&#39;train-images-idx3-ubyte.gz&#39;</span><span class="ansi-blue-fg">)</span>
+<span class="ansi-green-intense-fg ansi-bold">    162</span> 
+<span class="ansi-green-intense-fg ansi-bold">    163</span> 
+
+<span class="ansi-green-fg">/opt/hostedtoolcache/Python/3.6.13/x64/lib/python3.6/site-packages/mnist/__init__.py</span> in <span class="ansi-cyan-fg">download_and_parse_mnist_file</span><span class="ansi-blue-fg">(fname, target_dir, force)</span>
+<span class="ansi-green-intense-fg ansi-bold">    141</span>         Numpy array <span class="ansi-green-fg">with</span> the dimensions <span class="ansi-green-fg">and</span> the data <span class="ansi-green-fg">in</span> the IDX file
+<span class="ansi-green-intense-fg ansi-bold">    142</span>     &#34;&#34;&#34;
+<span class="ansi-green-fg">--&gt; 143</span><span class="ansi-red-fg">     </span>fname <span class="ansi-blue-fg">=</span> download_file<span class="ansi-blue-fg">(</span>fname<span class="ansi-blue-fg">,</span> target_dir<span class="ansi-blue-fg">=</span>target_dir<span class="ansi-blue-fg">,</span> force<span class="ansi-blue-fg">=</span>force<span class="ansi-blue-fg">)</span>
+<span class="ansi-green-intense-fg ansi-bold">    144</span>     fopen <span class="ansi-blue-fg">=</span> gzip<span class="ansi-blue-fg">.</span>open <span class="ansi-green-fg">if</span> os<span class="ansi-blue-fg">.</span>path<span class="ansi-blue-fg">.</span>splitext<span class="ansi-blue-fg">(</span>fname<span class="ansi-blue-fg">)</span><span class="ansi-blue-fg">[</span><span class="ansi-cyan-fg">1</span><span class="ansi-blue-fg">]</span> <span class="ansi-blue-fg">==</span> <span class="ansi-blue-fg">&#39;.gz&#39;</span> <span class="ansi-green-fg">else</span> open
+<span class="ansi-green-intense-fg ansi-bold">    145</span>     <span class="ansi-green-fg">with</span> fopen<span class="ansi-blue-fg">(</span>fname<span class="ansi-blue-fg">,</span> <span class="ansi-blue-fg">&#39;rb&#39;</span><span class="ansi-blue-fg">)</span> <span class="ansi-green-fg">as</span> fd<span class="ansi-blue-fg">:</span>
+
+<span class="ansi-green-fg">/opt/hostedtoolcache/Python/3.6.13/x64/lib/python3.6/site-packages/mnist/__init__.py</span> in <span class="ansi-cyan-fg">download_file</span><span class="ansi-blue-fg">(fname, target_dir, force)</span>
+<span class="ansi-green-intense-fg ansi-bold">     57</span>     <span class="ansi-green-fg">if</span> force <span class="ansi-green-fg">or</span> <span class="ansi-green-fg">not</span> os<span class="ansi-blue-fg">.</span>path<span class="ansi-blue-fg">.</span>isfile<span class="ansi-blue-fg">(</span>target_fname<span class="ansi-blue-fg">)</span><span class="ansi-blue-fg">:</span>
+<span class="ansi-green-intense-fg ansi-bold">     58</span>         url <span class="ansi-blue-fg">=</span> urljoin<span class="ansi-blue-fg">(</span>datasets_url<span class="ansi-blue-fg">,</span> fname<span class="ansi-blue-fg">)</span>
+<span class="ansi-green-fg">---&gt; 59</span><span class="ansi-red-fg">         </span>urlretrieve<span class="ansi-blue-fg">(</span>url<span class="ansi-blue-fg">,</span> target_fname<span class="ansi-blue-fg">)</span>
+<span class="ansi-green-intense-fg ansi-bold">     60</span> 
+<span class="ansi-green-intense-fg ansi-bold">     61</span>     <span class="ansi-green-fg">return</span> target_fname
+
+<span class="ansi-green-fg">/opt/hostedtoolcache/Python/3.6.13/x64/lib/python3.6/urllib/request.py</span> in <span class="ansi-cyan-fg">urlretrieve</span><span class="ansi-blue-fg">(url, filename, reporthook, data)</span>
+<span class="ansi-green-intense-fg ansi-bold">    246</span>     url_type<span class="ansi-blue-fg">,</span> path <span class="ansi-blue-fg">=</span> splittype<span class="ansi-blue-fg">(</span>url<span class="ansi-blue-fg">)</span>
+<span class="ansi-green-intense-fg ansi-bold">    247</span> 
+<span class="ansi-green-fg">--&gt; 248</span><span class="ansi-red-fg">     </span><span class="ansi-green-fg">with</span> contextlib<span class="ansi-blue-fg">.</span>closing<span class="ansi-blue-fg">(</span>urlopen<span class="ansi-blue-fg">(</span>url<span class="ansi-blue-fg">,</span> data<span class="ansi-blue-fg">)</span><span class="ansi-blue-fg">)</span> <span class="ansi-green-fg">as</span> fp<span class="ansi-blue-fg">:</span>
+<span class="ansi-green-intense-fg ansi-bold">    249</span>         headers <span class="ansi-blue-fg">=</span> fp<span class="ansi-blue-fg">.</span>info<span class="ansi-blue-fg">(</span><span class="ansi-blue-fg">)</span>
+<span class="ansi-green-intense-fg ansi-bold">    250</span> 
+
+<span class="ansi-green-fg">/opt/hostedtoolcache/Python/3.6.13/x64/lib/python3.6/urllib/request.py</span> in <span class="ansi-cyan-fg">urlopen</span><span class="ansi-blue-fg">(url, data, timeout, cafile, capath, cadefault, context)</span>
+<span class="ansi-green-intense-fg ansi-bold">    221</span>     <span class="ansi-green-fg">else</span><span class="ansi-blue-fg">:</span>
+<span class="ansi-green-intense-fg ansi-bold">    222</span>         opener <span class="ansi-blue-fg">=</span> _opener
+<span class="ansi-green-fg">--&gt; 223</span><span class="ansi-red-fg">     </span><span class="ansi-green-fg">return</span> opener<span class="ansi-blue-fg">.</span>open<span class="ansi-blue-fg">(</span>url<span class="ansi-blue-fg">,</span> data<span class="ansi-blue-fg">,</span> timeout<span class="ansi-blue-fg">)</span>
+<span class="ansi-green-intense-fg ansi-bold">    224</span> 
+<span class="ansi-green-intense-fg ansi-bold">    225</span> <span class="ansi-green-fg">def</span> install_opener<span class="ansi-blue-fg">(</span>opener<span class="ansi-blue-fg">)</span><span class="ansi-blue-fg">:</span>
+
+<span class="ansi-green-fg">/opt/hostedtoolcache/Python/3.6.13/x64/lib/python3.6/urllib/request.py</span> in <span class="ansi-cyan-fg">open</span><span class="ansi-blue-fg">(self, fullurl, data, timeout)</span>
+<span class="ansi-green-intense-fg ansi-bold">    530</span>         <span class="ansi-green-fg">for</span> processor <span class="ansi-green-fg">in</span> self<span class="ansi-blue-fg">.</span>process_response<span class="ansi-blue-fg">.</span>get<span class="ansi-blue-fg">(</span>protocol<span class="ansi-blue-fg">,</span> <span class="ansi-blue-fg">[</span><span class="ansi-blue-fg">]</span><span class="ansi-blue-fg">)</span><span class="ansi-blue-fg">:</span>
+<span class="ansi-green-intense-fg ansi-bold">    531</span>             meth <span class="ansi-blue-fg">=</span> getattr<span class="ansi-blue-fg">(</span>processor<span class="ansi-blue-fg">,</span> meth_name<span class="ansi-blue-fg">)</span>
+<span class="ansi-green-fg">--&gt; 532</span><span class="ansi-red-fg">             </span>response <span class="ansi-blue-fg">=</span> meth<span class="ansi-blue-fg">(</span>req<span class="ansi-blue-fg">,</span> response<span class="ansi-blue-fg">)</span>
+<span class="ansi-green-intense-fg ansi-bold">    533</span> 
+<span class="ansi-green-intense-fg ansi-bold">    534</span>         <span class="ansi-green-fg">return</span> response
+
+<span class="ansi-green-fg">/opt/hostedtoolcache/Python/3.6.13/x64/lib/python3.6/urllib/request.py</span> in <span class="ansi-cyan-fg">http_response</span><span class="ansi-blue-fg">(self, request, response)</span>
+<span class="ansi-green-intense-fg ansi-bold">    640</span>         <span class="ansi-green-fg">if</span> <span class="ansi-green-fg">not</span> <span class="ansi-blue-fg">(</span><span class="ansi-cyan-fg">200</span> <span class="ansi-blue-fg">&lt;=</span> code <span class="ansi-blue-fg">&lt;</span> <span class="ansi-cyan-fg">300</span><span class="ansi-blue-fg">)</span><span class="ansi-blue-fg">:</span>
+<span class="ansi-green-intense-fg ansi-bold">    641</span>             response = self.parent.error(
+<span class="ansi-green-fg">--&gt; 642</span><span class="ansi-red-fg">                 &#39;http&#39;, request, response, code, msg, hdrs)
+</span><span class="ansi-green-intense-fg ansi-bold">    643</span> 
+<span class="ansi-green-intense-fg ansi-bold">    644</span>         <span class="ansi-green-fg">return</span> response
+
+<span class="ansi-green-fg">/opt/hostedtoolcache/Python/3.6.13/x64/lib/python3.6/urllib/request.py</span> in <span class="ansi-cyan-fg">error</span><span class="ansi-blue-fg">(self, proto, *args)</span>
+<span class="ansi-green-intense-fg ansi-bold">    568</span>         <span class="ansi-green-fg">if</span> http_err<span class="ansi-blue-fg">:</span>
+<span class="ansi-green-intense-fg ansi-bold">    569</span>             args <span class="ansi-blue-fg">=</span> <span class="ansi-blue-fg">(</span>dict<span class="ansi-blue-fg">,</span> <span class="ansi-blue-fg">&#39;default&#39;</span><span class="ansi-blue-fg">,</span> <span class="ansi-blue-fg">&#39;http_error_default&#39;</span><span class="ansi-blue-fg">)</span> <span class="ansi-blue-fg">+</span> orig_args
+<span class="ansi-green-fg">--&gt; 570</span><span class="ansi-red-fg">             </span><span class="ansi-green-fg">return</span> self<span class="ansi-blue-fg">.</span>_call_chain<span class="ansi-blue-fg">(</span><span class="ansi-blue-fg">*</span>args<span class="ansi-blue-fg">)</span>
+<span class="ansi-green-intense-fg ansi-bold">    571</span> 
+<span class="ansi-green-intense-fg ansi-bold">    572</span> <span class="ansi-red-fg"># XXX probably also want an abstract factory that knows when it makes</span>
+
+<span class="ansi-green-fg">/opt/hostedtoolcache/Python/3.6.13/x64/lib/python3.6/urllib/request.py</span> in <span class="ansi-cyan-fg">_call_chain</span><span class="ansi-blue-fg">(self, chain, kind, meth_name, *args)</span>
+<span class="ansi-green-intense-fg ansi-bold">    502</span>         <span class="ansi-green-fg">for</span> handler <span class="ansi-green-fg">in</span> handlers<span class="ansi-blue-fg">:</span>
+<span class="ansi-green-intense-fg ansi-bold">    503</span>             func <span class="ansi-blue-fg">=</span> getattr<span class="ansi-blue-fg">(</span>handler<span class="ansi-blue-fg">,</span> meth_name<span class="ansi-blue-fg">)</span>
+<span class="ansi-green-fg">--&gt; 504</span><span class="ansi-red-fg">             </span>result <span class="ansi-blue-fg">=</span> func<span class="ansi-blue-fg">(</span><span class="ansi-blue-fg">*</span>args<span class="ansi-blue-fg">)</span>
+<span class="ansi-green-intense-fg ansi-bold">    505</span>             <span class="ansi-green-fg">if</span> result <span class="ansi-green-fg">is</span> <span class="ansi-green-fg">not</span> <span class="ansi-green-fg">None</span><span class="ansi-blue-fg">:</span>
+<span class="ansi-green-intense-fg ansi-bold">    506</span>                 <span class="ansi-green-fg">return</span> result
+
+<span class="ansi-green-fg">/opt/hostedtoolcache/Python/3.6.13/x64/lib/python3.6/urllib/request.py</span> in <span class="ansi-cyan-fg">http_error_default</span><span class="ansi-blue-fg">(self, req, fp, code, msg, hdrs)</span>
+<span class="ansi-green-intense-fg ansi-bold">    648</span> <span class="ansi-green-fg">class</span> HTTPDefaultErrorHandler<span class="ansi-blue-fg">(</span>BaseHandler<span class="ansi-blue-fg">)</span><span class="ansi-blue-fg">:</span>
+<span class="ansi-green-intense-fg ansi-bold">    649</span>     <span class="ansi-green-fg">def</span> http_error_default<span class="ansi-blue-fg">(</span>self<span class="ansi-blue-fg">,</span> req<span class="ansi-blue-fg">,</span> fp<span class="ansi-blue-fg">,</span> code<span class="ansi-blue-fg">,</span> msg<span class="ansi-blue-fg">,</span> hdrs<span class="ansi-blue-fg">)</span><span class="ansi-blue-fg">:</span>
+<span class="ansi-green-fg">--&gt; 650</span><span class="ansi-red-fg">         </span><span class="ansi-green-fg">raise</span> HTTPError<span class="ansi-blue-fg">(</span>req<span class="ansi-blue-fg">.</span>full_url<span class="ansi-blue-fg">,</span> code<span class="ansi-blue-fg">,</span> msg<span class="ansi-blue-fg">,</span> hdrs<span class="ansi-blue-fg">,</span> fp<span class="ansi-blue-fg">)</span>
+<span class="ansi-green-intense-fg ansi-bold">    651</span> 
+<span class="ansi-green-intense-fg ansi-bold">    652</span> <span class="ansi-green-fg">class</span> HTTPRedirectHandler<span class="ansi-blue-fg">(</span>BaseHandler<span class="ansi-blue-fg">)</span><span class="ansi-blue-fg">:</span>
+
+<span class="ansi-red-fg">HTTPError</span>: HTTP Error 503: Service Unavailable</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">train_images</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="n">train_labels</span><span class="o">.</span><span class="n">shape</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+    
+
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">test_images</span> <span class="o">=</span> <span class="n">mnist</span><span class="o">.</span><span class="n">test_images</span><span class="p">()</span>
+<span class="n">test_labels</span> <span class="o">=</span> <span class="n">mnist</span><span class="o">.</span><span class="n">test_labels</span><span class="p">()</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+    
+
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">test_images</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="n">test_labels</span><span class="o">.</span><span class="n">shape</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+    
+
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">image_index</span> <span class="o">=</span> <span class="mi">7776</span> <span class="c1"># You may select anything up to 60,000</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">train_labels</span><span class="p">[</span><span class="n">image_index</span><span class="p">])</span> 
+<span class="n">plt</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">train_images</span><span class="p">[</span><span class="n">image_index</span><span class="p">],</span> <span class="n">cmap</span><span class="o">=</span><span class="s1">&#39;Greys&#39;</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+    
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Filter-data-to-get-3-and-8-out">Filter data to get 3 and 8 out<a class="anchor-link" href="#Filter-data-to-get-3-and-8-out"> </a></h2>
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">train_filter</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">((</span><span class="n">train_labels</span> <span class="o">==</span> <span class="mi">3</span> <span class="p">)</span> <span class="o">|</span> <span class="p">(</span><span class="n">train_labels</span> <span class="o">==</span> <span class="mi">8</span><span class="p">))</span>
+<span class="n">test_filter</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">((</span><span class="n">test_labels</span> <span class="o">==</span> <span class="mi">3</span><span class="p">)</span> <span class="o">|</span> <span class="p">(</span><span class="n">test_labels</span> <span class="o">==</span> <span class="mi">8</span><span class="p">))</span>
+<span class="n">X_train</span><span class="p">,</span> <span class="n">y_train</span> <span class="o">=</span> <span class="n">train_images</span><span class="p">[</span><span class="n">train_filter</span><span class="p">],</span> <span class="n">train_labels</span><span class="p">[</span><span class="n">train_filter</span><span class="p">]</span>
+<span class="n">X_test</span><span class="p">,</span> <span class="n">y_test</span> <span class="o">=</span> <span class="n">test_images</span><span class="p">[</span><span class="n">test_filter</span><span class="p">],</span> <span class="n">test_labels</span><span class="p">[</span><span class="n">test_filter</span><span class="p">]</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+    
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>We normalize the pixel values in the 0 to 1 range</p>
+
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">X_train</span> <span class="o">=</span> <span class="n">X_train</span><span class="o">/</span><span class="mf">255.</span>
+<span class="n">X_test</span> <span class="o">=</span> <span class="n">X_test</span><span class="o">/</span><span class="mf">255.</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+    
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Setup the labels as 1 (when the digit is 3) and 0 (when the digit is 8)</p>
+
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">y_train</span> <span class="o">=</span> <span class="mi">1</span><span class="o">*</span><span class="p">(</span><span class="n">y_train</span><span class="o">==</span><span class="mi">3</span><span class="p">)</span>
+<span class="n">y_test</span> <span class="o">=</span> <span class="mi">1</span><span class="o">*</span><span class="p">(</span><span class="n">y_test</span><span class="o">==</span><span class="mi">3</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+    
+
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">X_train</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="n">X_test</span><span class="o">.</span><span class="n">shape</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+    
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="Reshape-the-input-data-to-create-a-linear-array">Reshape the input data to create a linear array<a class="anchor-link" href="#Reshape-the-input-data-to-create-a-linear-array"> </a></h3>
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">X_train</span> <span class="o">=</span> <span class="n">X_train</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">X_train</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">X_test</span> <span class="o">=</span> <span class="n">X_test</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">X_test</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">X_train</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="n">X_test</span><span class="o">.</span><span class="n">shape</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+    
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="Importing-appropriate-functions-from-'Kudzu'">Importing appropriate functions from 'Kudzu'<a class="anchor-link" href="#Importing-appropriate-functions-from-'Kudzu'"> </a></h3>
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">from</span> <span class="nn">kudzu.layer</span> <span class="kn">import</span> <span class="n">Sigmoid</span>
+<span class="kn">from</span> <span class="nn">kudzu.layer</span> <span class="kn">import</span> <span class="n">Relu</span>
+<span class="kn">from</span> <span class="nn">kudzu.layer</span> <span class="kn">import</span> <span class="n">Affine</span><span class="p">,</span> <span class="n">Sigmoid</span>
+
+<span class="kn">from</span> <span class="nn">kudzu.model</span> <span class="kn">import</span> <span class="n">Model</span>
+<span class="kn">from</span> <span class="nn">kudzu.train</span> <span class="kn">import</span> <span class="n">Learner</span>
+<span class="kn">from</span> <span class="nn">kudzu.optim</span> <span class="kn">import</span> <span class="n">GD</span>
+<span class="kn">from</span> <span class="nn">kudzu.data</span> <span class="kn">import</span> <span class="n">Data</span><span class="p">,</span> <span class="n">Dataloader</span><span class="p">,</span> <span class="n">Sampler</span>
+
+<span class="kn">from</span> <span class="nn">kudzu.callbacks</span> <span class="kn">import</span> <span class="n">AccCallback</span>
+<span class="kn">from</span> <span class="nn">kudzu.callbacks</span> <span class="kn">import</span> <span class="n">ClfCallback</span>
+
+<span class="kn">from</span> <span class="nn">kudzu.loss</span> <span class="kn">import</span> <span class="n">MSE</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+    
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="Let-us-create-a-Config-class,-to-store-important-parameters.">Let us create a <code>Config</code> class, to store important parameters.<a class="anchor-link" href="#Let-us-create-a-Config-class,-to-store-important-parameters."> </a></h3><p>This class essentially plays the role of a dictionary.</p>
+
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="k">class</span> <span class="nc">Config</span><span class="p">:</span>
+    <span class="k">pass</span>
+<span class="n">config</span> <span class="o">=</span> <span class="n">Config</span><span class="p">()</span>
+<span class="n">config</span><span class="o">.</span><span class="n">lr</span> <span class="o">=</span> <span class="mf">0.001</span>
+<span class="n">config</span><span class="o">.</span><span class="n">num_epochs</span> <span class="o">=</span> <span class="mi">251</span>
+<span class="n">config</span><span class="o">.</span><span class="n">bs</span> <span class="o">=</span> <span class="mi">50</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+    
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="Initializing-data-to-the-variables">Initializing data to the variables<a class="anchor-link" href="#Initializing-data-to-the-variables"> </a></h3>
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">data</span> <span class="o">=</span> <span class="n">Data</span><span class="p">(</span><span class="n">X_train</span><span class="p">,</span> <span class="n">y_train</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">))</span>
+<span class="n">sampler</span> <span class="o">=</span> <span class="n">Sampler</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">config</span><span class="o">.</span><span class="n">bs</span><span class="p">,</span> <span class="n">shuffle</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+<span class="n">dl</span> <span class="o">=</span> <span class="n">Dataloader</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">sampler</span><span class="p">)</span>
+
+<span class="n">opt</span> <span class="o">=</span> <span class="n">GD</span><span class="p">(</span><span class="n">config</span><span class="o">.</span><span class="n">lr</span><span class="p">)</span>
+<span class="n">loss</span> <span class="o">=</span> <span class="n">MSE</span><span class="p">()</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+    
+
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">training_xdata</span> <span class="o">=</span> <span class="n">X_train</span>
+<span class="n">testing_xdata</span> <span class="o">=</span> <span class="n">X_test</span>
+<span class="n">training_ydata</span> <span class="o">=</span> <span class="n">y_train</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">testing_ydata</span> <span class="o">=</span> <span class="n">y_test</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+    
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="Running-Models-with-the-Training-data">Running Models with the Training data<a class="anchor-link" href="#Running-Models-with-the-Training-data"> </a></h3><p>Details about the network layers:</p>
+<ul>
+<li>A first affine layer has 784 inputs and does 100 affine transforms. These are followed by a Relu</li>
+<li>A second affine layer has 100 inputs from the 100 activations of the past layer, and does 100 affine transforms. These are followed by a Relu</li>
+<li>A third affine layer has 100 activations and does 2 affine transformations to create an embedding for visualization. There is no non-linearity here.</li>
+<li>A final "logistic regression" which has an affine transform from 2 inputs to 1 output, which is squeezed through a sigmoid.</li>
+</ul>
+<p>Help taken from Anshuman's Notebook.</p>
+
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># layers for the Neural Network</span>
+<span class="n">layers</span> <span class="o">=</span> <span class="p">[</span><span class="n">Affine</span><span class="p">(</span><span class="s2">&quot;first&quot;</span><span class="p">,</span> <span class="mi">784</span><span class="p">,</span> <span class="mi">100</span><span class="p">),</span> <span class="n">Relu</span><span class="p">(</span><span class="s2">&quot;first&quot;</span><span class="p">),</span> <span class="n">Affine</span><span class="p">(</span><span class="s2">&quot;second&quot;</span><span class="p">,</span> <span class="mi">100</span><span class="p">,</span> <span class="mi">100</span><span class="p">),</span> <span class="n">Relu</span><span class="p">(</span><span class="s2">&quot;second&quot;</span><span class="p">),</span> <span class="n">Affine</span><span class="p">(</span><span class="s2">&quot;third&quot;</span><span class="p">,</span> <span class="mi">100</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span> <span class="n">Affine</span><span class="p">(</span><span class="s2">&quot;final&quot;</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="n">Sigmoid</span><span class="p">(</span><span class="s2">&quot;final&quot;</span><span class="p">)]</span>
+<span class="n">model_nn</span> <span class="o">=</span> <span class="n">Model</span><span class="p">(</span><span class="n">layers</span><span class="p">)</span>
+
+<span class="c1"># layers for the Logistic Regression</span>
+<span class="n">layers_lr</span> <span class="o">=</span> <span class="p">[</span><span class="n">Affine</span><span class="p">(</span><span class="s2">&quot;logits&quot;</span><span class="p">,</span> <span class="mi">784</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="n">Sigmoid</span><span class="p">(</span><span class="s2">&quot;sigmoid&quot;</span><span class="p">)]</span>
+<span class="n">model_lr</span> <span class="o">=</span> <span class="n">Model</span><span class="p">(</span><span class="n">layers_lr</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+    
+
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># suffix _nn stands for Neural Network.</span>
+<span class="n">learner_nn</span> <span class="o">=</span> <span class="n">Learner</span><span class="p">(</span><span class="n">loss</span><span class="p">,</span> <span class="n">model_nn</span><span class="p">,</span> <span class="n">opt</span><span class="p">,</span> <span class="n">config</span><span class="o">.</span><span class="n">num_epochs</span><span class="p">)</span>
+<span class="n">acc_nn</span> <span class="o">=</span> <span class="n">ClfCallback</span><span class="p">(</span><span class="n">learner_nn</span><span class="p">,</span> <span class="n">config</span><span class="o">.</span><span class="n">bs</span><span class="p">,</span> <span class="n">training_xdata</span> <span class="p">,</span> <span class="n">testing_xdata</span><span class="p">,</span> <span class="n">training_ydata</span><span class="p">,</span> <span class="n">testing_ydata</span><span class="p">)</span>
+<span class="n">learner_nn</span><span class="o">.</span><span class="n">set_callbacks</span><span class="p">([</span><span class="n">acc_nn</span><span class="p">])</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+    
+
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="s2">&quot;====== Neural Network ======&quot;</span><span class="p">)</span>
+<span class="n">learner_nn</span><span class="o">.</span><span class="n">train_loop</span><span class="p">(</span><span class="n">dl</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+    
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="Logistic-Regression-based-Implementation.">Logistic Regression based Implementation.<a class="anchor-link" href="#Logistic-Regression-based-Implementation."> </a></h3>
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">learner_lr</span> <span class="o">=</span> <span class="n">Learner</span><span class="p">(</span><span class="n">loss</span><span class="p">,</span> <span class="n">model_lr</span><span class="p">,</span> <span class="n">opt</span><span class="p">,</span> <span class="n">config</span><span class="o">.</span><span class="n">num_epochs</span><span class="p">)</span>
+<span class="n">acc_lr</span> <span class="o">=</span> <span class="n">ClfCallback</span><span class="p">(</span><span class="n">learner_lr</span><span class="p">,</span> <span class="n">config</span><span class="o">.</span><span class="n">bs</span><span class="p">,</span> <span class="n">training_xdata</span> <span class="p">,</span> <span class="n">testing_xdata</span><span class="p">,</span> <span class="n">training_ydata</span><span class="p">,</span> <span class="n">testing_ydata</span><span class="p">)</span>
+<span class="n">learner_lr</span><span class="o">.</span><span class="n">set_callbacks</span><span class="p">([</span><span class="n">acc_lr</span><span class="p">])</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+    
+
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="s2">&quot;====== Logistic Regression ======&quot;</span><span class="p">)</span>
+<span class="n">learner_lr</span><span class="o">.</span><span class="n">train_loop</span><span class="p">(</span><span class="n">dl</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+    
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="Comparing-results-of-NN-and-LR">Comparing results of NN and LR<a class="anchor-link" href="#Comparing-results-of-NN-and-LR"> </a></h3>
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">15</span><span class="p">,</span><span class="mi">10</span><span class="p">))</span>
+
+<span class="c1"># Neural Network plots</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">acc_nn</span><span class="o">.</span><span class="n">accuracies</span><span class="p">,</span> <span class="s1">&#39;r-&#39;</span><span class="p">,</span> <span class="n">label</span> <span class="o">=</span> <span class="s2">&quot;Training Accuracies - NN&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">acc_nn</span><span class="o">.</span><span class="n">test_accuracies</span><span class="p">,</span> <span class="s1">&#39;g-&#39;</span><span class="p">,</span> <span class="n">label</span> <span class="o">=</span> <span class="s2">&quot;Testing Accuracies - NN&quot;</span><span class="p">)</span>
+
+<span class="c1"># Logistic Regression plots</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">acc_lr</span><span class="o">.</span><span class="n">accuracies</span><span class="p">,</span> <span class="s1">&#39;k-&#39;</span><span class="p">,</span> <span class="n">label</span> <span class="o">=</span> <span class="s2">&quot;Training Accuracies - LR&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">acc_lr</span><span class="o">.</span><span class="n">test_accuracies</span><span class="p">,</span> <span class="s1">&#39;b-&#39;</span><span class="p">,</span> <span class="n">label</span> <span class="o">=</span> <span class="s2">&quot;Testing Accuracies - LR&quot;</span><span class="p">)</span>
+
+<span class="n">plt</span><span class="o">.</span><span class="n">ylim</span><span class="p">(</span><span class="mf">0.8</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+
+<span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+    
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="From-the-plot,-we-can-observe-the-following:">From the plot, we can observe the following:<a class="anchor-link" href="#From-the-plot,-we-can-observe-the-following:"> </a></h3><ul>
+<li>Neural Network achieves higher accuracy than the Logistic Regression model.</li>
+<li>This apparently, is because of overfitting, i.e. NN captures more noise than data.</li>
+<li>Testing accuracy of NN drops below the Training accuracy at higher epochs. This explains the over-fitting on training data.</li>
+<li>Logistic Regression gives a reliable accuracy, without the above mentioned problem.</li>
+</ul>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="Moving-till-the-last-but-one-layer-(excluding-it).">Moving till the last but one layer (excluding it).<a class="anchor-link" href="#Moving-till-the-last-but-one-layer-(excluding-it)."> </a></h3><h4 id="Plotting-the-outputs-of-this-layer-of-the-NN.">Plotting the outputs of this layer of the NN.<a class="anchor-link" href="#Plotting-the-outputs-of-this-layer-of-the-NN."> </a></h4>
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">model_new</span> <span class="o">=</span> <span class="n">Model</span><span class="p">(</span><span class="n">layers</span><span class="p">[:</span><span class="o">-</span><span class="mi">2</span><span class="p">])</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+    
+
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">plot_testing</span> <span class="o">=</span> <span class="n">model_new</span><span class="p">(</span><span class="n">testing_xdata</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+    
+
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">8</span><span class="p">,</span><span class="mi">7</span><span class="p">))</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">plot_testing</span><span class="p">[:,</span><span class="mi">0</span><span class="p">],</span> <span class="n">plot_testing</span><span class="p">[:,</span><span class="mi">1</span><span class="p">],</span> <span class="n">alpha</span> <span class="o">=</span> <span class="mf">0.1</span><span class="p">,</span> <span class="n">c</span> <span class="o">=</span> <span class="n">y_test</span><span class="o">.</span><span class="n">ravel</span><span class="p">());</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s1">&#39;Outputs&#39;</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+    
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="Plotting-probability-contours">Plotting probability contours<a class="anchor-link" href="#Plotting-probability-contours"> </a></h3>
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">model_prob</span> <span class="o">=</span> <span class="n">Model</span><span class="p">(</span><span class="n">layers</span><span class="p">[</span><span class="o">-</span><span class="mi">2</span><span class="p">:])</span> 
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+    
+
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># Adjust the x and y ranges according to the above generated plot.</span>
+<span class="n">x_range</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="o">-</span><span class="mi">4</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">100</span><span class="p">)</span> 
+<span class="n">y_range</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="o">-</span><span class="mi">6</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">100</span><span class="p">)</span> 
+<span class="n">x_grid</span><span class="p">,</span> <span class="n">y_grid</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">meshgrid</span><span class="p">(</span><span class="n">x_range</span><span class="p">,</span> <span class="n">y_range</span><span class="p">)</span> <span class="c1"># x_grid and y_grig are of size 100 X 100</span>
+
+<span class="c1"># converting x_grid and y_grid to continuous arrays</span>
+<span class="n">x_grid_flat</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ravel</span><span class="p">(</span><span class="n">x_grid</span><span class="p">)</span>
+<span class="n">y_grid_flat</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ravel</span><span class="p">(</span><span class="n">y_grid</span><span class="p">)</span>
+
+<span class="c1"># The last layer of the current model takes two columns as input. Hence transpose of np.vstack() is required.</span>
+<span class="n">X</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">vstack</span><span class="p">((</span><span class="n">x_grid_flat</span><span class="p">,</span> <span class="n">y_grid_flat</span><span class="p">))</span><span class="o">.</span><span class="n">T</span>
+
+<span class="c1"># x_grid and y_grid are of size 100 x 100</span>
+<span class="n">probability_contour</span> <span class="o">=</span> <span class="n">model_prob</span><span class="p">(</span><span class="n">X</span><span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="mi">100</span><span class="p">,</span><span class="mi">100</span><span class="p">)</span> 
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+    
+
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span><span class="mi">9</span><span class="p">))</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">plot_testing</span><span class="p">[:,</span><span class="mi">0</span><span class="p">],</span> <span class="n">plot_testing</span><span class="p">[:,</span><span class="mi">1</span><span class="p">],</span> <span class="n">alpha</span> <span class="o">=</span> <span class="mf">0.1</span><span class="p">,</span> <span class="n">c</span> <span class="o">=</span> <span class="n">y_test</span><span class="o">.</span><span class="n">ravel</span><span class="p">())</span>
+<span class="n">contours</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">contour</span><span class="p">(</span><span class="n">x_grid</span><span class="p">,</span><span class="n">y_grid</span><span class="p">,</span><span class="n">probability_contour</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s1">&#39;Probability Contours&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">clabel</span><span class="p">(</span><span class="n">contours</span><span class="p">,</span> <span class="n">inline</span> <span class="o">=</span> <span class="kc">True</span> <span class="p">);</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+    
+
+</div>
+
+
+
+  </div><a class="u-url" href="/blog/2020/08/11/NeuralNetwork.html" hidden></a>
+</article>
+      </div>
+    </main><footer class="site-footer h-card">
+  <data class="u-url" href="/blog/"></data>
+
+  <div class="wrapper">
+
+    <div class="footer-col-wrapper">
+      <div class="footer-col">
+        <p class="feed-subscribe">
+          <a href="/blog/feed.xml">
+            <svg class="svg-icon orange">
+              <use xlink:href="/blog/assets/minima-social-icons.svg#rss"></use>
+            </svg><span>Subscribe</span>
+          </a>
+        </p>
+      </div>
+      <div class="footer-col">
+        <p>Blog created as a part of univ.ai ktf-c1 Project.</p>
+      </div>
+    </div>
+
+    <div class="social-links"><ul class="social-media-list"><li><a rel="me" href="https://github.com/akshithsriram" title="akshithsriram"><svg class="svg-icon grey"><use xlink:href="/blog/assets/minima-social-icons.svg#github"></use></svg></a></li><li><a rel="me" href="https://twitter.com/fastdotai" title="fastdotai"><svg class="svg-icon grey"><use xlink:href="/blog/assets/minima-social-icons.svg#twitter"></use></svg></a></li></ul>
+</div>
+
+  </div>
+
+</footer>
+</body>
+
+</html>
