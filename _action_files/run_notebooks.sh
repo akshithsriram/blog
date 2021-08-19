@@ -5,7 +5,7 @@ cd _notebooks/
 
 ERRORS=""
 
-for file in *.ipynb
+for file in *d.ipynb
 do
 
   if file == "2020-08-11-CovidDashboard_auto_updated.ipynb"; then
